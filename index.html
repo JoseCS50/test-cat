@@ -32,6 +32,36 @@
             font-family: 'Montserrat', sans-serif;
         }
 
+        /* Title Animation */
+        @keyframes titleFadeIn {
+        0% {
+        opacity: 0;
+        transform: scale(0.8); /* Start slightly smaller */
+        filter: brightness(50%); /* Dimmed colors */
+        }
+        50% {
+        opacity: 0.8;
+        transform: scale(1.1); /* Slightly larger for a "pop" effect */
+        filter: brightness(120%); /* Brighten colors */
+        }
+        100% {
+        opacity: 1;
+        transform: scale(1); /* Return to normal size */
+        filter: brightness(100%); /* Normal colors */
+    }
+}
+
+h1 {
+    font-size: 2.5em;
+    margin: 20px 0;
+    background: linear-gradient(90deg, #FF5733, #FFC300);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: 'Montserrat', sans-serif;
+    animation: titleFadeIn 1.5s ease-in-out; /* Apply the animation */
+}
+
         /* Image Container */
         #catContainer {
             display: flex;
