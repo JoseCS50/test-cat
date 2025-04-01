@@ -65,7 +65,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            max-width: 90%; /* Match responsiveness */
+            max-width: 90%;
             padding: 20px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.5);
@@ -73,7 +73,6 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Image */
         img {
             max-width: 100%;
             max-height: 70vh;
@@ -96,7 +95,7 @@
 
         /* Fact Container */
         #factContainer {
-            max-width: 90%; /* Match the image width */
+            max-width: 90%;
             margin: 20px auto;
             padding: 15px;
             background: rgba(255, 255, 255, 0.5);
@@ -112,7 +111,7 @@
             margin: 0;
         }
 
-        /* Button (CTA) */
+        /* Buttons */
         button {
             position: relative;
             padding: 15px 40px;
@@ -133,9 +132,9 @@
             transform: scale(1.1);
         }
 
-        button:focus {
-            outline: 3px solid var(--secondary-highlight-color);
-            outline-offset: 4px;
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         /* Dark Mode Toggle */
@@ -184,6 +183,30 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+        /* Dark Theme */
+        .dark-theme {
+            --background-color: #333;
+            --text-color: #f0f0f0;
+            --highlight-color: #FFC300;
+            --secondary-highlight-color: #FF5733;
+        }
+
+        /* Media Queries */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            #factContainer {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -200,7 +223,88 @@
     </footer>
     <button id="themeToggle" aria-label="Toggle dark theme">🐾</button>
     <script>
-        // JavaScript code for dark mode toggle remains unchanged
+        const catContainer = document.getElementById('catContainer');
+        const newCatButton = document.getElementById('newCatButton');
+        const themeToggle = document.getElementById('themeToggle');
+        const factContainer = document.getElementById('catFact');
+
+        // Apply saved theme on page load
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+        });
+
+        async function fetchCatFact() {
+            factContainer.textContent = 'Loading cat fact...';
+
+            try {
+                const response = await fetch('https://meowfacts.herokuapp.com/');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cat fact');
+                }
+
+                const data = await response.json();
+                factContainer.textContent = data.data[0];
+            } catch (error) {
+                console.error('Error fetching cat fact:', error);
+                factContainer.textContent = 'Could not load cat fact. Please try again later.';
+            }
+        }
+
+        async function displayRandomCatImage() {
+            catContainer.innerHTML = `
+                <div class="loader-container" role="status" aria-live="polite" aria-label="Loading content">
+                    <div class="loader"></div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('https://api.thecatapi.com/v1/images/search', {
+                    headers: {
+                        'x-api-key': 'live_X0YSP2Uiy0jTefbQWHleA95TxfxJPgeCpKa9Njm3xFqcmWbTvfFA67Y82081sncI' // Replace with your API key
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                const imageUrl = data[0].url;
+
+                const imgElement = document.createElement('img');
+                imgElement.src = imageUrl;
+                imgElement.alt = "A cute cat";
+                imgElement.onload = () => {
+                    catContainer.innerHTML = '';
+                    catContainer.appendChild(imgElement);
+                    newCatButton.disabled = false;
+                    newCatButton.innerHTML = '🐾 Get a New Cat';
+                };
+            } catch (error) {
+                console.error('Error fetching the cat image:', error);
+                catContainer.innerHTML = '<p>Could not load cat image. Please try again later.</p>';
+                newCatButton.disabled = false;
+                newCatButton.innerHTML = '🐾 Get a New Cat';
+            }
+        }
+
+        async function handleNewCatButtonClick() {
+            newCatButton.disabled = true;
+            newCatButton.innerHTML = '🐾 Loading...';
+            await displayRandomCatImage();
+            await fetchCatFact();
+        }
+
+        // Initial Content Load
+        handleNewCatButtonClick();
+
+        // Button Click Event
+        newCatButton.addEventListener('click', handleNewCatButtonClick);
     </script>
 </body>
 </html>
