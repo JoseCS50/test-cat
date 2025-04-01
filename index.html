@@ -169,28 +169,63 @@
 
         /* Footer */
         footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            text-align: center;
-            width: 100%;
-        }
+    margin-top: 30px;
+    font-size: 0.9em;
+    text-align: center;
+    width: 100%;
+}
 
-        footer a {
-            color: var(--highlight-color);
-            text-decoration: none;
-        }
+#footerContent {
+    display: flex;
+    justify-content: space-between; /* Align credit line and toggle button */
+    align-items: center;
+    max-width: 90%; /* Match the width of the other content */
+    margin: 0 auto; /* Center footer content */
+}
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+#footerContent p {
+    margin: 0;
+}
 
-        /* Dark Theme */
-        .dark-theme {
-            --background-color: #333;
-            --text-color: #f0f0f0;
-            --highlight-color: #FFC300;
-            --secondary-highlight-color: #FF5733;
-        }
+footer a {
+    color: var(--highlight-color);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Dark Mode Toggle Button */
+#themeToggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Circular shape */
+    background: linear-gradient(45deg, var(--highlight-color), var(--secondary-highlight-color));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 20px; /* Size of the paw emoji */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#themeToggle:hover {
+    transform: scale(1.1); /* Slightly larger on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#themeToggle:focus {
+    outline: 3px solid var(--secondary-highlight-color); /* Accessible focus outline */
+    outline-offset: 4px;
+}
+
+#themeToggle:active {
+    transform: scale(0.95); /* Slightly smaller on click */
+}
 
         /* Media Queries */
         @media (max-width: 600px) {
@@ -219,7 +254,10 @@
     </div>
     <button id="newCatButton" aria-label="Get a new random cat 🐾">🐾 Get a New Cat</button>
     <footer>
+    <div id="footerContent">
         <p>Powered by <a href="https://thecatapi.com" target="_blank">The Cat API</a></p>
+        <button id="themeToggle" aria-label="Toggle dark theme">🐾</button>
+    </div>
     </footer>
     <button id="themeToggle" aria-label="Toggle dark theme">🐾</button>
     <script>
