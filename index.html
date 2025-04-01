@@ -38,10 +38,9 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            width: 100%;
-            min-height: 300px;
+            max-width: 90%; /* Hug the image width */
             padding: 15px;
-            box-sizing: border-box;
+            margin: 0 auto; /* Center horizontally */
             background: rgba(255, 255, 255, 0.5);
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -49,7 +48,7 @@
 
         /* Image */
         img {
-            max-width: 90%;
+            max-width: 100%;
             max-height: 70vh;
             height: auto;
             border-radius: 15px;
@@ -183,7 +182,7 @@
     <main id="catContainer" role="img" aria-labelledby="mainTitle" aria-live="polite">
         <!-- Images or loader will be dynamically added here -->
     </main>
-    <button id="newCatButton" aria-label="Get a new random cat 🐾">Get a New Cat</button>
+    <button id="newCatButton" aria-label="Get a new random cat 🐾">🐾 Get a New Cat</button>
     <footer>
         <p>Powered by <a href="https://thecatapi.com" target="_blank">The Cat API</a></p>
     </footer>
@@ -212,7 +211,6 @@
                 const data = await response.json();
                 const imageUrl = data[0].url;
 
-                // Clear previous content and display the new image
                 catContainer.innerHTML = ''; // Clear the loader
                 const imgElement = document.createElement('img');
                 imgElement.src = imageUrl;
@@ -221,15 +219,17 @@
             } catch (error) {
                 console.error('Error fetching the cat image:', error);
                 catContainer.innerHTML = '<p>Could not load cat image. Please try again later.</p>';
-            } finally {
-                // Always re-enable the button, even if an error occurs
-                newCatButton.disabled = false;
             }
         }
 
         async function handleNewCatButtonClick() {
             newCatButton.disabled = true; // Disable button while fetching
+            newCatButton.innerHTML = '🐾 Loading...'; // Show loading state on button
+
             await displayRandomCatImage();
+
+            newCatButton.disabled = false; // Re-enable button
+            newCatButton.innerHTML = '🐾 Get a New Cat'; // Restore original button text
         }
 
         // Initial cat image
