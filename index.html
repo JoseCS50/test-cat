@@ -12,7 +12,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
             margin: 0;
             background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
             text-align: center;
@@ -31,8 +31,8 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            padding: 10px;
-            min-height: 300px; /* Ensure the container has a minimum height */
+            height: 300px; /* Ensure consistent height */
+            position: relative;
         }
 
         img {
@@ -63,7 +63,7 @@
         }
 
         button:focus {
-            outline: 2px solid #0056b3; /* Add focus outline for keyboard navigation */
+            outline: 2px solid #0056b3;
             outline-offset: 4px;
         }
 
@@ -76,8 +76,8 @@
             margin-top: 20px;
             font-size: 0.9em;
             text-align: center;
-            width: 100%; /* Ensure footer takes up full width */
-            word-wrap: break-word; /* Allow long text to wrap */
+            width: 100%;
+            word-wrap: break-word;
         }
 
         footer a {
@@ -89,22 +89,34 @@
             text-decoration: underline;
         }
 
-        #catContainer p {
-            font-size: 1.2em;
-            color: #555;
-            font-style: italic;
+        /* Centered Loader */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .spinner {
+        /* Loader Animation */
+        .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #007BFF;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spinner 1s linear infinite;
-            margin: 10px auto;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
         }
 
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Fade-in Animation for New Images */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -125,11 +137,11 @@
             }
 
             img {
-                max-height: 50vh; /* Reduce image size on small screens */
+                max-height: 50vh;
             }
 
             footer {
-                font-size: 0.8em; /* Slightly smaller font on smaller screens */
+                font-size: 0.8em;
             }
         }
     </style>
@@ -140,7 +152,7 @@
         <h1 id="mainTitle">Only Cats!</h1>
     </header>
     <main id="catContainer" role="img" aria-labelledby="mainTitle" aria-live="polite">
-        <!-- Images will be dynamically added here -->
+        <!-- Images or loader will be dynamically added here -->
     </main>
     <button id="newCatButton" aria-label="Get a New Cat">Get a New Cat</button>
     <footer>
@@ -152,10 +164,11 @@
         const newCatButton = document.getElementById('newCatButton');
 
         async function displayRandomCatImage() {
-            // Add loading feedback
+            // Add animated loader
             catContainer.innerHTML = `
-                <div class="spinner"></div>
-                <p>Loading...</p>
+                <div class="loader-container">
+                    <div class="loader"></div>
+                </div>
             `;
 
             try {
@@ -179,17 +192,4 @@
         }
 
         async function handleNewCatButtonClick() {
-            newCatButton.disabled = true; // Disable button while fetching
-            await displayRandomCatImage();
-            newCatButton.disabled = false; // Re-enable button
-        }
-
-        // Initial cat image
-        displayRandomCatImage();
-
-        // Fetch a new cat image on button click
-        newCatButton.addEventListener('click', handleNewCatButtonClick);
-    </script>
-
-</body>
-</html>
+            newCatButton.disabled = true; //
