@@ -210,26 +210,25 @@
             text-decoration: underline;
         }
 
-        /* Dark Mode Toggle */
-    #themeToggle {
-    width: 50px;
-    aspect-ratio: 1; /* Enforce circular proportions */
-    border-radius: 50%; /* Circular shape */
+ /* Dark Mode Toggle Switch */
+#themeToggle {
+    position: relative;
+    width: 80px;
+    height: 40px;
+    border-radius: 50px;
     background: linear-gradient(45deg, var(--highlight-color), var(--secondary-highlight-color));
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: white;
-    font-size: 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
+    padding: 5px;
     cursor: pointer;
-    border: none;
-    margin-top: 10px;
     transition: all 0.3s ease;
+    outline: none; /* Remove default focus outline */
 }
 
 #themeToggle:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -238,8 +237,43 @@
     outline-offset: 4px;
 }
 
-#themeToggle:active {
-    transform: scale(0.95);
+.toggle-thumb {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#themeToggle.dark .toggle-thumb {
+    left: calc(100% - 35px); /* Move thumb to the right in dark mode */
+    background: black;
+}
+
+.cat-icon {
+    width: 25px;
+    height: 25px;
+    pointer-events: none; /* Prevent icons from blocking clicks */
+}
+
+.cat-icon.light {
+    margin-left: 5px;
+}
+
+.cat-icon.dark {
+    margin-right: 5px;
+}
+
+#themeToggle.dark .cat-icon.light {
+    opacity: 0.3; /* Dim the light icon in dark mode */
+}
+
+#themeToggle:not(.dark) .cat-icon.dark {
+    opacity: 0.3; /* Dim the dark icon in light mode */
 }
 
         /* Dark Theme */
@@ -288,7 +322,11 @@
     <footer>
         <div id="footerContent">
             <p>Powered by <a href="https://thecatapi.com" target="_blank">The Cat API</a></p>
-            <button id="themeToggle" aria-label="Toggle dark theme">🐾</button>
+         <div id="themeToggle" tabindex="0" aria-label="Toggle dark mode">
+    <img src="white-cat.svg" alt="Light mode" class="cat-icon light" />
+    <div class="toggle-thumb"></div>
+    <img src="black-cat.svg" alt="Dark mode" class="cat-icon dark" />
+</div>
         </div>
     </footer>
     <script>
@@ -303,10 +341,26 @@
             document.body.classList.add('dark-theme');
         }
 
-     themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-theme');
-    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-    themeToggle.blur(); // Remove focus after the click
+     const themeToggle = document.getElementById('themeToggle');
+
+// Apply saved theme on page load
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-theme');
+    themeToggle.classList.add('dark');
+}
+
+themeToggle.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark-theme');
+    themeToggle.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+});
+
+// Enable keyboard toggle functionality
+themeToggle.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault(); // Prevent default scrolling for Space key
+        themeToggle.click();
+    }
 });
 
         async function fetchCatFact() {
