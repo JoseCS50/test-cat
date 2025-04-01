@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Cat Image</title>
+    <link rel="icon" href="https://cdn2.thecatapi.com/static/favicon.ico" type="image/x-icon">
     <style>
         /* General Styles */
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: auto;
-            min-height: 100vh;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
             margin: 0;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
             text-align: center;
             overflow-y: auto;
             padding: 20px;
@@ -31,6 +32,7 @@
             align-items: center;
             width: 100%;
             padding: 10px;
+            min-height: 300px; /* Ensure the container has a minimum height */
         }
 
         img {
@@ -39,7 +41,7 @@
             height: auto;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.5s ease-in-out; /* Animation for new images */
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         button {
@@ -49,18 +51,33 @@
             margin: 20px;
             border: none;
             border-radius: 5px;
-            background-color: #007BFF;
+            background: linear-gradient(45deg, #007BFF, #0056b3);
             color: white;
-            transition: background-color 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(45deg, #0056b3, #003d80);
+            transform: scale(1.05);
+        }
+
+        button:focus {
+            outline: 2px solid #0056b3; /* Add focus outline for keyboard navigation */
+            outline-offset: 4px;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         footer {
             margin-top: 20px;
             font-size: 0.9em;
+            text-align: center;
+            width: 100%; /* Ensure footer takes up full width */
+            word-wrap: break-word; /* Allow long text to wrap */
         }
 
         footer a {
@@ -72,13 +89,22 @@
             text-decoration: underline;
         }
 
-        /* Error Message Styling */
         #catContainer p {
-            color: red;
-            font-weight: bold;
+            font-size: 1.2em;
+            color: #555;
+            font-style: italic;
         }
 
-        /* Keyframes for fade-in animation */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007BFF;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spinner 1s linear infinite;
+            margin: 10px auto;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -87,16 +113,36 @@
                 opacity: 1;
             }
         }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            img {
+                max-height: 50vh; /* Reduce image size on small screens */
+            }
+
+            footer {
+                font-size: 0.8em; /* Slightly smaller font on smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1 id="mainTitle">Only Cats!</h1>
-    <main id="catContainer" role="img" aria-labelledby="mainTitle">
+    <header>
+        <h1 id="mainTitle">Only Cats!</h1>
+    </header>
+    <main id="catContainer" role="img" aria-labelledby="mainTitle" aria-live="polite">
         <!-- Images will be dynamically added here -->
     </main>
     <button id="newCatButton" aria-label="Get a New Cat">Get a New Cat</button>
-
     <footer>
         <p>Powered by <a href="https://thecatapi.com" target="_blank">The Cat API</a></p>
     </footer>
@@ -107,7 +153,10 @@
 
         async function displayRandomCatImage() {
             // Add loading feedback
-            catContainer.innerHTML = '<p>Loading...</p>';
+            catContainer.innerHTML = `
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            `;
 
             try {
                 const response = await fetch('https://api.thecatapi.com/v1/images/search');
@@ -116,7 +165,7 @@
                 }
                 const data = await response.json();
                 const imageUrl = data[0].url;
-                
+
                 // Clear previous content and display the new image
                 catContainer.innerHTML = '';
                 const imgElement = document.createElement('img');
@@ -129,10 +178,9 @@
             }
         }
 
-        // Disable the button while fetching a new image
         async function handleNewCatButtonClick() {
-            newCatButton.disabled = true; // Disable button
-            await displayRandomCatImage(); // Wait for the fetch to complete
+            newCatButton.disabled = true; // Disable button while fetching
+            await displayRandomCatImage();
             newCatButton.disabled = false; // Re-enable button
         }
 
