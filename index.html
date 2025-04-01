@@ -211,32 +211,36 @@
         }
 
         /* Dark Mode Toggle */
-        #themeToggle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--highlight-color), var(--secondary-highlight-color));
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            color: white;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border: none;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
+    #themeToggle {
+    width: 50px;
+    aspect-ratio: 1; /* Enforce circular proportions */
+    border-radius: 50%; /* Circular shape */
+    background: linear-gradient(45deg, var(--highlight-color), var(--secondary-highlight-color));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
 
-        #themeToggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
+#themeToggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
 
-        #themeToggle:focus {
-            outline: 3px solid var(--secondary-highlight-color);
-            outline-offset: 4px;
-        }
+#themeToggle:focus {
+    outline: 3px solid var(--secondary-highlight-color);
+    outline-offset: 4px;
+}
+
+#themeToggle:active {
+    transform: scale(0.95);
+}
 
         /* Dark Theme */
         .dark-theme {
@@ -299,10 +303,11 @@
             document.body.classList.add('dark-theme');
         }
 
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-        });
+     themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+    themeToggle.blur(); // Remove focus after the click
+});
 
         async function fetchCatFact() {
             catFactText.textContent = 'Loading cat fact...';
